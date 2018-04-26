@@ -10,8 +10,6 @@ namespace StricklandPropane.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {
-        DbSet<ApplicationUser> User { get; set; }
-
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
