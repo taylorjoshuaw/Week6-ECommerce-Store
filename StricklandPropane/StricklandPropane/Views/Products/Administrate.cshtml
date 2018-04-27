@@ -1,0 +1,26 @@
+﻿@model IEnumerable<Product>
+
+@{
+    ViewBag.Title = "Administrate";
+}
+
+<h2>Hello, @User.Identity.Name</h2>
+<strong>Welcome to your super secret adminstration dashboard!</strong>
+<h3>Here are our exciting products:</h3>
+
+@if (Model.Count() < 1)
+{
+    <p>Uh.....we actually don't have any products yet. Whoops!</p>
+}
+else
+{
+    <dl>
+    @foreach (var product in Model)
+    {
+        <dt>Product Name</dt>
+        <dd>@product.Name</dd>
+        <dt>Price</dt>
+        <dd>$@product.Price</dd>
+    }
+    </dl>
+}

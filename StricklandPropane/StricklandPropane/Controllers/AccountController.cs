@@ -32,25 +32,22 @@ namespace StricklandPropane.Controllers
             new Claim(ClaimTypes.Name, $"{user.LastName}, {user.FirstName}", ClaimValueTypes.String),
             new Claim(ClaimTypes.Email, user.NormalizedEmail, ClaimValueTypes.Email),
             new Claim(ClaimTypes.StateOrProvince, ((int)user.HomeState).ToString(), ClaimValueTypes.Integer32),
-            new Claim(ClaimTypes.StateOrProvince, ((int)user.GrillingPreference).ToString(), ClaimValueTypes.Integer32)
+            new Claim("GrillingPreference", ((int)user.GrillingPreference).ToString(), ClaimValueTypes.Integer32)
         };
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(string returnUrl = null)
+        public async Task<IActionResult> Login()
         {
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
-            ViewBag.ReturnUrl = returnUrl;
             return View(new LoginViewModel());
         }
 
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel vm, string returnUrl = null)
+        public async Task<IActionResult> Login(LoginViewModel vm)
         {
-            ViewBag.ReturnUrl = returnUrl;
-
             if (ModelState.IsValid)
             {
                 var result = await _signInManager.PasswordSignInAsync(vm.Email,
@@ -58,7 +55,16 @@ namespace StricklandPropane.Controllers
 
                 if (result.Succeeded)
                 {
-                    return RedirectToLocal(returnUrl);
+                    ApplicationUser user = await _userManager.FindByEmailAsync(vm.Email);
+
+                    // If the user is an administrator, take them to the product administration
+                    // dashboard; otherwise, take the user to the products landing page
+                    if (await _userManager.IsInRoleAsync(user, ApplicationRoles.Admin))
+                    {
+                        return RedirectToAction("Administrate", "Products");
+                    }
+
+                    return RedirectToAction("Index", "Products");
                 }
                 if (result.RequiresTwoFactor)
                 {
