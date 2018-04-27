@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace StricklandPropane.Data
 {
-    public class SeedRoles
+    public static class SeedRoles
     {
-        private static string AdminUserName => "Administrator";
+        private static string AdminEmail => "admin@admin.com";
         private static string AdminPassword => "$SuPeRsEcR37!";
 
         private static List<IdentityRole> Roles { get; } = new List<IdentityRole>
@@ -37,23 +37,21 @@ namespace StricklandPropane.Data
             {
                 await context.Database.EnsureCreatedAsync();
 
-                if (await context.UserRoles.AnyAsync())
-                {
-                    return;
-                }
-
-
+                await AddRoles(context);
+                await AddAdminUser(context, userManager);
+                await AddUserRoles(context);
             }
         }
 
-        public static async Task AddUserRoles(ApplicationDbContext context)
+        public static async Task AddRoles(ApplicationDbContext context)
         {
-            if (await context.UserRoles.AnyAsync())
+            if (await context.Roles.AnyAsync())
             {
                 return;
             }
 
-            
+            await context.Roles.AddRangeAsync(Roles);
+            await context.SaveChangesAsync();
         }
 
         public static async Task AddAdminUser(ApplicationDbContext context,
@@ -66,15 +64,33 @@ namespace StricklandPropane.Data
 
             ApplicationUser user = new ApplicationUser()
             {
-                UserName = AdminUserName,
-                NormalizedUserName = AdminUserName.ToUpper(),
-                Email = AdminUserName,
-                NormalizedEmail = AdminUserName.ToUpper(),
+                UserName = AdminEmail,
+                NormalizedUserName = AdminEmail.ToUpper(),
+                Email = AdminEmail,
+                NormalizedEmail = AdminEmail.ToUpper(),
                 EmailConfirmed = true,
                 ConcurrencyStamp = Guid.NewGuid().ToString()
             };
 
-            await userManager.CreateAsync(user);
+            await userManager.CreateAsync(user, AdminPassword);
+
+        }
+
+        public static async Task AddUserRoles(ApplicationDbContext context)
+        {
+            if (await context.UserRoles.AnyAsync())
+            {
+                return;
+            }
+
+            IdentityUserRole<string> userRole = new IdentityUserRole<string>()
+            {
+                UserId = (await context.Users.SingleAsync(u => u.UserName == AdminEmail)).Id,
+                RoleId = (await context.Roles.SingleAsync(r => r.Name == ApplicationRoles.Admin)).Id
+            };
+
+            await context.AddAsync(userRole);
+            await context.SaveChangesAsync();
         }
     }
 }

@@ -25,5 +25,15 @@ namespace StricklandPropane.Models
         [Display(Name = "Confirm Password")]
         [Compare("Password", ErrorMessage = "The password and the password confirmation must match.")]
         public string ConfirmPassword { get; set; }
+
+        [Required]
+        [EnumDataType(typeof(State))]
+        [Display(Name = "Home State")]
+        public State HomeState { get; set; }
+
+        [Required]
+        [EnumDataType(typeof(GrillingPreference))]
+        [Display(Name = "Grilling Preference")]
+        public GrillingPreference GrillingPreference { get; set; }
     }
 }
