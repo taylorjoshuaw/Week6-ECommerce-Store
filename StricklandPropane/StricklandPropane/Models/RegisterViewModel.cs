@@ -16,7 +16,6 @@ namespace StricklandPropane.Models
         [Required]
         [Display(Name = "Password")]
         [DataType(DataType.Password)]
-        [RegularExpression(@"(.*\w+.*){6,100}", ErrorMessage = "Passwords must consist of at least 6 non-whitespace characters")]
         [StringLength(100, MinimumLength = 6, ErrorMessage = "Passwords must be between 6-100 characters in length.")]
         public string Password { get; set; }
 
@@ -25,6 +24,18 @@ namespace StricklandPropane.Models
         [Display(Name = "Confirm Password")]
         [Compare("Password", ErrorMessage = "The password and the password confirmation must match.")]
         public string ConfirmPassword { get; set; }
+
+        [Required]
+        [Display(Name = "First Name")]
+        [RegularExpression(@"(.*\w+.*){1,50}", ErrorMessage = "Names should be at least 1 and at most 50 characters in length.")]
+        [StringLength(50, MinimumLength = 1, ErrorMessage = "Names should be at least 1 and at most 50 characters in length.")]
+        public string FirstName { get; set; }
+
+        [Required]
+        [Display(Name = "Last Name")]
+        [RegularExpression(@"(.*\w+.*){1,50}", ErrorMessage = "Names should be at least 1 and at most 50 characters in length.")]
+        [StringLength(50, MinimumLength = 1, ErrorMessage = "Names should be at least 1 and at most 50 characters in length.")]
+        public string LastName { get; set; }
 
         [Required]
         [EnumDataType(typeof(State))]

@@ -73,7 +73,6 @@ namespace StricklandPropane.Data
             };
 
             await userManager.CreateAsync(user, AdminPassword);
-
         }
 
         public static async Task AddUserRoles(ApplicationDbContext context)

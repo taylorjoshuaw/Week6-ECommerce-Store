@@ -25,7 +25,7 @@ namespace StricklandPropane.Models
         public static string MemberNormalized => Member.ToUpper();
     }
 
-    public enum GrillingPreference : byte
+    public enum GrillingPreference : Int32
     {
         Propane,
         Charcoal,
@@ -33,7 +33,7 @@ namespace StricklandPropane.Models
         LaserBeams
     }
 
-    public enum State : byte
+    public enum State : Int32
     {
         Alabama,
         Alaska,

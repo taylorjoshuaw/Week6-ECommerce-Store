@@ -22,16 +22,24 @@
     <span asp-validation-for="ConfirmPassword"></span>
     <br />
 
+    <label asp-for="FirstName"></label>
+    <input asp-for="FirstName" />
+    <span asp-validation-for="FirstName"></span>
+    <br />
+
+    <label asp-for="LastName"></label>
+    <input asp-for="LastName" />
+    <span asp-validation-for="LastName"></span>
+    <br />
+
     <label asp-for="HomeState"></label>
     <select asp-for="HomeState" asp-items="@Html.GetEnumSelectList(typeof(State))">
-        <option value="">-- Select Home State --</option>
     </select>
     <span asp-validation-for="HomeState"></span>
     <br />
 
     <label asp-for="GrillingPreference"></label>
     <select asp-for="GrillingPreference" asp-items="@Html.GetEnumSelectList(typeof(GrillingPreference))">
-        <option value="">-- Select Grilling Preference --</option>
     </select>
     <span asp-validation-for="GrillingPreference"></span>
     <br />

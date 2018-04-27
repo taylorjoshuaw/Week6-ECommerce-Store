@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -25,6 +26,14 @@ namespace StricklandPropane.Controllers
             _signInManager = signInManager;
             _dbContext = dbContext;
         }
+
+        public List<Claim> GetDefaultClaimsListForUser(ApplicationUser user) => new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, $"{user.LastName}, {user.FirstName}", ClaimValueTypes.String),
+            new Claim(ClaimTypes.Email, user.NormalizedEmail, ClaimValueTypes.Email),
+            new Claim(ClaimTypes.StateOrProvince, ((int)user.HomeState).ToString(), ClaimValueTypes.Integer32),
+            new Claim(ClaimTypes.StateOrProvince, ((int)user.GrillingPreference).ToString(), ClaimValueTypes.Integer32)
+        };
 
         [HttpGet]
         [AllowAnonymous]
@@ -66,17 +75,19 @@ namespace StricklandPropane.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Register(RegisterViewModel vm, string returnUrl = null)
+        public IActionResult Register(string returnUrl = null)
         {
             ViewBag.ReturnUrl = returnUrl;
-            return View(vm);
+            return View();
         }
 
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         [ActionName("Register")]
-        public async Task<IActionResult> RegisterCommit(RegisterViewModel vm, string returnUrl = null)
+        public async Task<IActionResult> RegisterCommit(
+            [Bind("Email", "Password", "ConfirmPassword", "FirstName", "LastName", "HomeState", "GrillingPreference")] RegisterViewModel vm,
+            string returnUrl = null)
         {
             ViewBag.ReturnUrl = returnUrl;
 
@@ -85,23 +96,31 @@ namespace StricklandPropane.Controllers
                 ApplicationUser user = new ApplicationUser()
                 {
                     Email = vm.Email,
-                    NormalizedEmail = vm.Email.ToUpper(),
+                    NormalizedEmail = vm.Email.ToLower(),
                     UserName = vm.Email,
-                    NormalizedUserName = vm.Email.ToUpper(),
-                    ConcurrencyStamp = Guid.NewGuid().ToString()
+                    NormalizedUserName = vm.Email.ToLower(),
+                    ConcurrencyStamp = Guid.NewGuid().ToString(),
+
+                    FirstName = vm.FirstName,
+                    LastName = vm.LastName,
+                    GrillingPreference = vm.GrillingPreference,
+                    HomeState = vm.HomeState
                 };
 
                 IdentityResult result = await _userManager.CreateAsync(user, vm.Password);
 
-                // If the user was created successfully, sign them in and redirect to
-                // the URL that they came from.
                 if (result.Succeeded)
                 {
+                    // Add default claims and member role to the new user
+                    await _userManager.AddClaimsAsync(user, GetDefaultClaimsListForUser(user));
+                    await _userManager.AddToRoleAsync(user, ApplicationRoles.Member);
+
+                    // Sign the user in and redirect them back to whence they came
                     await _signInManager.SignInAsync(user, isPersistent: true);
                     return RedirectToLocal(returnUrl);
                 }
 
-                // Accumulate all errors into the model state
+                // Something went wrong. Accumulate all errors into the model state.
                 foreach (IdentityError error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
