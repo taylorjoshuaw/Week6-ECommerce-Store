@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StricklandPropane.Data;
 using StricklandPropane.Models;
+using StricklandPropane.Models.Policies;
 
 namespace StricklandPropane
 {
@@ -40,6 +41,12 @@ namespace StricklandPropane
                 options.Cookie.HttpOnly = true;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
                 options.LoginPath = "/Account/Login";
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(ApplicationPolicies.AdminOnly, p => p.RequireRole(ApplicationRoles.Admin));
+                options.AddPolicy(ApplicationPolicies.MemberOnly, p => p.RequireRole(ApplicationRoles.Member, ApplicationRoles.Admin));
             });
 
             services.AddMvc();
