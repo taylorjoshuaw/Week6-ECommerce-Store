@@ -1,0 +1,31 @@
+﻿@model Product
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Do you really want to delete @Model.Name</h2>
+
+<form method="post">
+    <input hidden asp-for="Id" />
+
+    <div>
+        <label asp-for="Name"></label>
+        <input readonly asp-for="Name" />
+    </div>
+    <div>
+        <label asp-for="Description"></label>
+        <textarea readonly asp-for="Description" rows="15" cols="80"></textarea>
+    </div>
+    <div>
+        <label asp-for="Price"></label>
+        <input readonly asp-for="Price" />
+    </div>
+    <div>
+        <label asp-for="ImageHref"></label>
+        <input readonly asp-for="ImageHref" />
+    </div>
+
+    <a asp-action="Details" asp-route-id="@Model.Id">Cancel</a>
+    <button type="submit">Submit</button>
+</form>

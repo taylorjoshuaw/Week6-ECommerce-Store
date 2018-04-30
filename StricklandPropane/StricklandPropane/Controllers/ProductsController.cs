@@ -94,10 +94,40 @@ namespace StricklandPropane.Controllers
             if (!id.HasValue || 
                 (product = await _productDbContext.Products.FindAsync(id.Value)) is null)
             {
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
 
             return View(product);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [Authorize(Policy = ApplicationPolicies.AdminOnly)]
+        public async Task<IActionResult> CommitDelete(long? id)
+        {
+            Product product;
+
+            // Make sure that an id was provided and that it corresponds to a Product
+            // entity in the database
+            if (!id.HasValue || 
+                (product = await _productDbContext.Products.FindAsync(id.Value)) is null)
+            {
+                return NotFound();
+            }
+
+            _productDbContext.Products.Remove(product);
+            
+            try
+            {
+                await _productDbContext.SaveChangesAsync();
+            }
+            catch
+            {
+                // TODO(taylorjoshuaw): Add logging here
+                return View(product);
+            }
+
+            // TODO(taylorjoshuaw): Change to redirect to Details once implemented
+            return RedirectToAction(nameof(Administrate));
         }
     }
 }
