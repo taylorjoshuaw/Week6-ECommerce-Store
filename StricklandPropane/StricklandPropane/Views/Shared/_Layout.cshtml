@@ -6,6 +6,15 @@
     <title>@ViewBag.Title</title>
 </head>
 <body>
+    @if (User != null)
+    {
+        <p>@User.Identity.Name <a asp-controller="Account" asp-action="Logout">&#40logout&#41</a></p>
+    }
+    else
+    {
+        <p>Not logged in. <a asp-controller="Account" asp-action="Login">&#40login&#40</a></p>
+    }
+    <hr />
     <div>
         @RenderBody()
     </div>

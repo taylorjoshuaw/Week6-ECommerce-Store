@@ -11,7 +11,7 @@ using StricklandPropane.Models.Policies;
 
 namespace StricklandPropane.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = ApplicationPolicies.AdminOnly)]
     public class ProductsController : Controller
     {
         private readonly ProductDbContext _productDbContext;
@@ -21,26 +21,17 @@ namespace StricklandPropane.Controllers
             _productDbContext = context;
         }
 
-        [Authorize(Policy = ApplicationPolicies.MemberOnly)]
         public IActionResult Index()
         {
             return View(_productDbContext.Products);
         }
 
-        [Authorize(Policy = ApplicationPolicies.AdminOnly)]
-        public IActionResult Administrate()
-        {
-            return View(_productDbContext.Products);
-        }
-
-        [Authorize(Policy = ApplicationPolicies.AdminOnly)]
         public IActionResult Create()
         {
             return View();
         }
 
         [HttpPost, ActionName("Create")]
-        [Authorize(Policy = ApplicationPolicies.AdminOnly)]
         public async Task<IActionResult> CommitCreate(
             [Bind("Name", "Description", "Price", "ImageHref")] Product newProduct)
         {
@@ -71,7 +62,6 @@ namespace StricklandPropane.Controllers
         }
 
 
-        [Authorize(Policy = ApplicationPolicies.AdminOnly)]
         public async Task<IActionResult> Edit(long? id)
         {
             Product product;
@@ -89,7 +79,6 @@ namespace StricklandPropane.Controllers
 
         [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        [Authorize(Policy = ApplicationPolicies.AdminOnly)]
         public async Task<IActionResult> CommitEdit(long? id)
         {
             if (!id.HasValue)
@@ -116,7 +105,6 @@ namespace StricklandPropane.Controllers
             return View(existingProduct);
         }
 
-        [Authorize(Policy = ApplicationPolicies.AdminOnly)]
         public async Task<IActionResult> Delete(long? id)
         {
             Product product;
@@ -133,7 +121,6 @@ namespace StricklandPropane.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
-        [Authorize(Policy = ApplicationPolicies.AdminOnly)]
         public async Task<IActionResult> CommitDelete(long? id)
         {
             Product product;
@@ -159,7 +146,20 @@ namespace StricklandPropane.Controllers
             }
 
             // TODO(taylorjoshuaw): Change to redirect to Details once implemented
-            return RedirectToAction(nameof(Administrate));
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Details(long? id)
+        {
+            Product product;
+
+            if (!id.HasValue ||
+                (product = await _productDbContext.Products.FindAsync(id.Value)) is null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(product);
         }
     }
 }

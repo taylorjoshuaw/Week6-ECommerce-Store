@@ -14,6 +14,12 @@ namespace StricklandPropane.Models.Policies
         public const string TexansOnly = "TexansOnly";
         public const string PropaneAdvocatesOnly = "PropaneAdvocatesOnly";
 
+        /// <summary>
+        /// Creates an IEnumerable of strings for every policy in the
+        /// ApplicationPolicies static class using CLR reflection.
+        /// </summary>
+        /// <returns>An IEnumerable of strings for each constant declared
+        /// in the ApplicationPolicies class.</returns>
         public static IEnumerable<string> ToEnumerable() =>
             typeof(ApplicationPolicies)
                 .GetFields(BindingFlags.Public | BindingFlags.Static |

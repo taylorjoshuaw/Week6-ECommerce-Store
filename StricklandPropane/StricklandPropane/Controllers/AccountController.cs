@@ -61,10 +61,12 @@ namespace StricklandPropane.Controllers
                     // dashboard; otherwise, take the user to the products landing page
                     if (await _userManager.IsInRoleAsync(user, ApplicationRoles.Admin))
                     {
-                        return RedirectToAction("Administrate", "Products");
+                        return RedirectToAction("Index", "Products");
                     }
 
-                    return RedirectToAction("Index", "Products");
+                    // TODO(taylorjoshuaw): Change this from the Home controller to the
+                    //                      shop controller once that is implemented
+                    return RedirectToAction("Index", "Home");
                 }
                 if (result.RequiresTwoFactor)
                 {
@@ -124,10 +126,12 @@ namespace StricklandPropane.Controllers
                     // dashboard; otherwise, take the user to the products landing page
                     if (await _userManager.IsInRoleAsync(user, ApplicationRoles.Admin))
                     {
-                        return RedirectToAction("Administrate", "Products");
+                        return RedirectToAction("Index", "Products");
                     }
 
-                    return RedirectToAction("Index", "Products");
+                    // TODO(taylorjoshuaw): Change this to the shop controller once
+                    //                      that has been implemented
+                    return RedirectToAction("Index", "Home");
                 }
 
                 // Something went wrong. Accumulate all errors into the model state.

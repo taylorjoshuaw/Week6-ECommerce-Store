@@ -1,11 +1,13 @@
 ﻿@model IEnumerable<Product>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Product Administration";
 }
 
-<h2>Welcome @User.Identity.Name!</h2>
+<h2>Hello, @User.Identity.Name</h2>
+<strong>Welcome to your super secret product adminstration dashboard!</strong>
 <h3>Here are our exciting products:</h3>
+<a asp-action="Create">Create New Product</a>
 
 @if (Model.Count() < 1)
 {
@@ -16,9 +18,11 @@ else
     @foreach (var product in Model)
     {
         <hr />
+        <a asp-action="Edit" asp-route-id="@product.Id">Edit</a><br />
+        <a asp-action="Delete" asp-route-id="@product.Id">Delete</a><br />
         <dl>
             <dt>Product Name</dt>
-            <dd>@product.Name</dd>
+            <dd><a asp-action="Details" asp-route-id="@product.Id">@product.Name</a></dd>
             <dt>Price</dt>
             <dd>$@product.Price</dd>
             <dt>Description</dt>
