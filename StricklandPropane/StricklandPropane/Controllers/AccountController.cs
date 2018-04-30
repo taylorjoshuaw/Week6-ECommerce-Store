@@ -81,9 +81,8 @@ namespace StricklandPropane.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Register(string returnUrl = null)
+        public IActionResult Register()
         {
-            ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
@@ -92,11 +91,8 @@ namespace StricklandPropane.Controllers
         [ValidateAntiForgeryToken]
         [ActionName("Register")]
         public async Task<IActionResult> RegisterCommit(
-            [Bind("Email", "Password", "ConfirmPassword", "FirstName", "LastName", "HomeState", "GrillingPreference")] RegisterViewModel vm,
-            string returnUrl = null)
+            [Bind("Email", "Password", "ConfirmPassword", "FirstName", "LastName", "HomeState", "GrillingPreference")] RegisterViewModel vm)
         {
-            ViewBag.ReturnUrl = returnUrl;
-
             if (ModelState.IsValid)
             {
                 ApplicationUser user = new ApplicationUser()
@@ -123,7 +119,15 @@ namespace StricklandPropane.Controllers
 
                     // Sign the user in and redirect them back to whence they came
                     await _signInManager.SignInAsync(user, isPersistent: true);
-                    return RedirectToLocal(returnUrl);
+
+                    // If the user is an administrator, take them to the product administration
+                    // dashboard; otherwise, take the user to the products landing page
+                    if (await _userManager.IsInRoleAsync(user, ApplicationRoles.Admin))
+                    {
+                        return RedirectToAction("Administrate", "Products");
+                    }
+
+                    return RedirectToAction("Index", "Products");
                 }
 
                 // Something went wrong. Accumulate all errors into the model state.

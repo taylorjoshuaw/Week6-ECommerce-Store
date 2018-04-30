@@ -29,9 +29,12 @@ namespace StricklandPropane
                 try
                 {
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                    Task task = SeedRoles.Initialize(services, userManager);
+                    Task rolesTask = SeedRoles.Initialize(services, userManager);
+                    Task productsTask = SeedProducts.Initialize(services);
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                    while (!task.IsCompleted) { }
+
+                    // Spinlock until seeding is complete (there is surely a better way to do this?)
+                    while (!rolesTask.IsCompleted || !productsTask.IsCompleted) { }
                 }
                 catch
                 {
