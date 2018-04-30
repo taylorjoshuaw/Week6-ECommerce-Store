@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Html;
 using StricklandPropane.Data;
 using StricklandPropane.Models;
 using StricklandPropane.Models.Policies;
@@ -47,6 +49,8 @@ namespace StricklandPropane
             {
                 options.AddPolicy(ApplicationPolicies.AdminOnly, p => p.RequireRole(ApplicationRoles.Admin));
                 options.AddPolicy(ApplicationPolicies.MemberOnly, p => p.RequireRole(ApplicationRoles.Member, ApplicationRoles.Admin));
+                options.AddPolicy(ApplicationPolicies.TexansOnly, p => p.RequireClaim(ClaimTypes.StateOrProvince, ((int)State.Texas).ToString()));
+                options.AddPolicy(ApplicationPolicies.PropaneAdvocatesOnly, p => p.RequireClaim("GrillingPreference", ((int)GrillingPreference.Propane).ToString()));
             });
 
             services.AddMvc();

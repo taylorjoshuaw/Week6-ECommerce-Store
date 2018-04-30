@@ -29,6 +29,13 @@
         <input asp-for="ImageHref" />
         <span asp-validation-for="ImageHref"></span>
     </div>
+    <div>
+        <label asp-for="PolicyRequirement"></label>
+        <select asp-for="PolicyRequirement" asp-items="@(new SelectList(ApplicationPolicies.ToEnumerable()))">
+            <option value="">- None -</option>
+        </select>
+        <span asp-validation-for="PolicyRequirement"></span>
+    </div>
 
     <a asp-action="Index">Cancel</a>
     <button type="submit">Submit</button>

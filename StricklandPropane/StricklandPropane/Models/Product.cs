@@ -24,5 +24,8 @@ namespace StricklandPropane.Models
 
         [Url]
         public string ImageHref { get; set; }
+
+        [Display(Name = "Requires a user policy to view?")]
+        public string PolicyRequirement { get; set; }
     }
 }
