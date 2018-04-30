@@ -14,13 +14,20 @@
 }
 else
 {
-    <dl>
     @foreach (var product in Model)
     {
-        <dt>Product Name</dt>
-        <dd>@product.Name</dd>
-        <dt>Price</dt>
-        <dd>$@product.Price</dd>
+        <hr />
+        <a asp-action="Edit" asp-route-id="@product.Id">Edit</a><br />
+        <a asp-action="Delete" asp-route-id="@product.Id">Delete</a><br />
+        <dl>
+            <dt>Product Name</dt>
+            <dd>@product.Name</dd>
+            <dt>Price</dt>
+            <dd>$@product.Price</dd>
+            <dt>Description</dt>
+            <dd>@product.Description</dd>
+            <dt>Image</dt>
+            <dd><img src="@product.ImageHref" /></dd>
+        </dl>
     }
-    </dl>
 }
