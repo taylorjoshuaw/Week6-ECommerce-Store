@@ -39,6 +39,37 @@ namespace StricklandPropane.Controllers
             return View();
         }
 
+        [HttpPost, ActionName("Create")]
+        [Authorize(Policy = ApplicationPolicies.AdminOnly)]
+        public async Task<IActionResult> CommitCreate(
+            [Bind("Name", "Description", "Price", "ImageHref")] Product newProduct)
+        {
+            // Only create an item if the model state is valid
+            if (ModelState.IsValid)
+            {
+                await _productDbContext.Products.AddAsync(newProduct);
+
+                try
+                {
+                    await _productDbContext.SaveChangesAsync();
+
+                    // TODO(taylorjoshuaw): Redirect to details view once it's implemented
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateException)
+                {
+                    // Something went wrong, add the error to the model state and give the
+                    // user another chance to commit their new product
+                    ModelState.AddModelError("", "Unable to commit changes to database. Please try again.");
+
+                    // TODO(taylorjoshuaw): Add logging here
+                }
+            }
+
+            return View(newProduct);
+        }
+
+
         [Authorize(Policy = ApplicationPolicies.AdminOnly)]
         public async Task<IActionResult> Edit(long? id)
         {
@@ -46,7 +77,7 @@ namespace StricklandPropane.Controllers
 
             // Make sure that an id was provided and that it corresponds to a Product
             // entity in the database
-            if (!id.HasValue || 
+            if (!id.HasValue ||
                 (product = await _productDbContext.Products.FindAsync(id.Value)) is null)
             {
                 return RedirectToAction(nameof(Index));
@@ -91,7 +122,7 @@ namespace StricklandPropane.Controllers
 
             // Make sure that an id was provided and that it corresponds to a Product
             // entity in the database
-            if (!id.HasValue || 
+            if (!id.HasValue ||
                 (product = await _productDbContext.Products.FindAsync(id.Value)) is null)
             {
                 return NotFound();
@@ -108,14 +139,14 @@ namespace StricklandPropane.Controllers
 
             // Make sure that an id was provided and that it corresponds to a Product
             // entity in the database
-            if (!id.HasValue || 
+            if (!id.HasValue ||
                 (product = await _productDbContext.Products.FindAsync(id.Value)) is null)
             {
                 return NotFound();
             }
 
             _productDbContext.Products.Remove(product);
-            
+
             try
             {
                 await _productDbContext.SaveChangesAsync();
