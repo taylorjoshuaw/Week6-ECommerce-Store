@@ -7,6 +7,7 @@
 <h2>Hello, @User.Identity.Name</h2>
 <strong>Welcome to your super secret adminstration dashboard!</strong>
 <h3>Here are our exciting products:</h3>
+<a asp-action="Create">Create New Product</a>
 
 @if (Model.Count() < 1)
 {

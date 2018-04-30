@@ -16,7 +16,7 @@ namespace StricklandPropane.Data
             {
                 Name = "20lbs Propane Tank",
                 Description = "A perfect choice for the griller who prefers to taste the meat, not the heat!",
-                ImageHref = "http://clipart-library.com/image_gallery/81212.png",
+                ImageHref = "/images/propane.png",
                 Price = 47.64M
             },
 
@@ -24,7 +24,7 @@ namespace StricklandPropane.Data
             {
                 Name = "20lbs Propane Tank Exchange",
                 Description = "Already have a tank but cooked for all of your family and in-laws? Exchange your tank for a new, filled tank so you can keep tasting the meat and not the heat!",
-                ImageHref = "http://clipart-library.com/image_gallery/81212.png",
+                ImageHref = "/images/propane.png",
                 Price = 14.95M
             }
         };

@@ -66,6 +66,7 @@ namespace StricklandPropane.Controllers
                 }
             }
 
+            // Something went wrong. Give the user another chance to create their product
             return View(newProduct);
         }
 

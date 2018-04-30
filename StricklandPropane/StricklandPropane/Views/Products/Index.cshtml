@@ -15,15 +15,16 @@ else
 {
     @foreach (var product in Model)
     {
-    <dl>
-        <dt>Product Name</dt>
-        <dd>@product.Name</dd>
-        <dt>Price</dt>
-        <dd>$@product.Price</dd>
-        <dt>Description</dt>
-        <dd>@product.Description</dd>
-        <dt>Image</dt>
-        <dd><img src="@product.ImageHref" /></dd>
-    </dl>
+        <hr />
+        <dl>
+            <dt>Product Name</dt>
+            <dd>@product.Name</dd>
+            <dt>Price</dt>
+            <dd>$@product.Price</dd>
+            <dt>Description</dt>
+            <dd>@product.Description</dd>
+            <dt>Image</dt>
+            <dd><img src="@product.ImageHref" /></dd>
+        </dl>
     }
 }
