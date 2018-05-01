@@ -61,7 +61,6 @@ namespace StricklandPropane.Controllers
             return View(newProduct);
         }
 
-
         public async Task<IActionResult> Edit(long? id)
         {
             Product product;

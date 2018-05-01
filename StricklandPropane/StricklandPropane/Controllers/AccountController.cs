@@ -64,9 +64,7 @@ namespace StricklandPropane.Controllers
                         return RedirectToAction("Index", "Products");
                     }
 
-                    // TODO(taylorjoshuaw): Change this from the Home controller to the
-                    //                      shop controller once that is implemented
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Shop");
                 }
                 if (result.RequiresTwoFactor)
                 {
@@ -138,9 +136,7 @@ namespace StricklandPropane.Controllers
                         return RedirectToAction("Index", "Products");
                     }
 
-                    // TODO(taylorjoshuaw): Change this to the shop controller once
-                    //                      that has been implemented
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Shop");
                 }
 
                 // Something went wrong. Accumulate all errors into the model state.
@@ -156,20 +152,6 @@ namespace StricklandPropane.Controllers
         public async Task<IActionResult> Profile()
         {
             return View(await _userManager.GetUserAsync(HttpContext.User));
-        }
-
-        private IActionResult RedirectToLocal(string returnUrl)
-        {
-            if (Url.IsLocalUrl(returnUrl))
-            {
-                return Redirect(returnUrl);
-            }
-            else
-            {
-                // TODO: Actually make some more controllers and views and actions and
-                //       whatnot so we can actually direct the user somewhere
-                return RedirectToAction("Index", "Home");
-            }
         }
     }
 }

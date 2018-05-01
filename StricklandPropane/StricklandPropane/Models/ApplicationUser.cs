@@ -9,10 +9,14 @@ namespace StricklandPropane.Models
 {
     public class ApplicationUser : IdentityUser
     {
+        [Display(Name = "First Name")]
         public string FirstName { get; set; }
+        [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
+        [Display(Name = "Home State")]
         public State HomeState { get; set; }
+        [Display(Name = "Grilling Preference")]
         public GrillingPreference GrillingPreference { get; set; }
     }
 

@@ -9,12 +9,17 @@
     @if (User.Identity.IsAuthenticated)
     {
         <form method="post" asp-controller="Account" asp-action="Logout">
-            <p>@User.Identity.Name</p> <button type="submit">Logout</button> <!-- Will be an anchor tag when Bootstrap is integrated <a asp-controller="Account" asp-action="Logout">&#40logout&#41</a> -->
+            <a asp-controller="Account" asp-action="Profile">@User.Identity.Name</a> <button type="submit">Logout</button> <!-- Will be an anchor tag when Bootstrap is integrated <a asp-controller="Account" asp-action="Logout">&#40logout&#41</a> -->
         </form>
     }
     else
     {
         <p>Not logged in. <a asp-controller="Account" asp-action="Login">&#40login&#41</a></p>
+    }
+    <p><a asp-controller="Shop" asp-action="Index">Shopping</a></p>
+    @if (User.IsInRole(ApplicationRoles.Admin))
+    {
+        <p><a asp-controller="Products" asp-action="Index">Product Administration Dashboard</a></p>
     }
     <hr />
     <div>

@@ -1,0 +1,34 @@
+﻿@model Product
+
+@{
+    ViewBag.Title = "Product Details";
+}
+
+<a asp-action="Index">Return to shopping...</a><br />
+
+<h2>@Model.Name Details</h2>
+
+<dl>
+    <dt>@Html.DisplayNameFor(p => p.Name)</dt>
+    <dd>@Html.DisplayFor(p => p.Name)</dd>
+    <dt>@Html.DisplayNameFor(p => p.Description)</dt>
+    <dd>@Html.DisplayFor(p => p.Description)</dd>
+    <dt>@Html.DisplayNameFor(p => p.Price)</dt>
+    <dd>@Html.DisplayFor(p => p.Price)</dd>
+    <dt>Product Image</dt>
+    <dd>
+        @if (!string.IsNullOrWhiteSpace(Model.ImageHref))
+        {
+            <a href="@Model.ImageHref"><img src="@Model.ImageHref" /></a>
+        }
+        else
+        {
+            <span>No image selected.</span>
+        }
+    </dd>
+    @if (!string.IsNullOrWhiteSpace(Model.PolicyRequirement))
+    {
+        <dt>@Html.DisplayNameFor(p => p.PolicyRequirement)</dt>
+        <dd>@Html.DisplayFor(p => p.PolicyRequirement)</dd>
+    }
+</dl>

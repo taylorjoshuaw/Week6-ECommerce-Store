@@ -9,8 +9,14 @@
 <dl>
     <dt>@Html.DisplayNameFor(m => m.Email)</dt>
     <dd>@Html.DisplayFor(m => m.Email)</dd>
-    <dt>Name (First and Last)</dt>
-    <dd>@Model.FirstName @Model.LastName</dd>
+    <!-- OR combined conditional, because we can at least display a last name
+         if the first name isn't present -->
+    @if (!string.IsNullOrEmpty(Model.FirstName) ||
+         !string.IsNullOrEmpty(Model.LastName))
+    {
+        <dt>Name (First and Last)</dt>
+        <dd>@Model.FirstName @Model.LastName</dd>
+    }
     <dt>@Html.DisplayNameFor(m => m.HomeState)</dt>
     <dd>@Html.DisplayFor(m => m.HomeState)</dd>
     <dt>@Html.DisplayNameFor(m => m.GrillingPreference)</dt>

@@ -1,0 +1,30 @@
+﻿@model IEnumerable<Product>
+
+@{
+    ViewBag.Title = "Shopping";
+}
+
+<h2>Howdy@(User.Identity.IsAuthenticated ? $", {User.Identity.Name}!" : "!")</h2>
+<h3>We got propane and propane accessories. Everything you need to taste the meat, not the heat.</h3>
+
+@if (Model.Count() < 1)
+{
+    <p>Uh.....we actually don't have any products yet. Whoops!</p>
+}
+else
+{
+    @foreach (var product in Model)
+    {
+        <hr />
+        <dl>
+            <dt>Product Name</dt>
+            <dd><a asp-action="Details" asp-route-id="@product.Id">@product.Name</a></dd>
+            <dt>Price</dt>
+            <dd>$@product.Price</dd>
+            <dt>Description</dt>
+            <dd>@product.Description</dd>
+            <dt>Image</dt>
+            <dd><img src="@product.ImageHref" /></dd>
+        </dl>
+    }
+}
