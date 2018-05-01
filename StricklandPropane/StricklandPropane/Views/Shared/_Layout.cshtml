@@ -6,13 +6,15 @@
     <title>@ViewBag.Title</title>
 </head>
 <body>
-    @if (User != null)
+    @if (User.Identity.IsAuthenticated)
     {
-        <p>@User.Identity.Name <a asp-controller="Account" asp-action="Logout">&#40logout&#41</a></p>
+        <form method="post" asp-controller="Account" asp-action="Logout">
+            <p>@User.Identity.Name</p> <button type="submit">Logout</button> <!-- Will be an anchor tag when Bootstrap is integrated <a asp-controller="Account" asp-action="Logout">&#40logout&#41</a> -->
+        </form>
     }
     else
     {
-        <p>Not logged in. <a asp-controller="Account" asp-action="Login">&#40login&#40</a></p>
+        <p>Not logged in. <a asp-controller="Account" asp-action="Login">&#40login&#41</a></p>
     }
     <hr />
     <div>

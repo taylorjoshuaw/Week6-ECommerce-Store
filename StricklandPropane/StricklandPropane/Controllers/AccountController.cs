@@ -81,6 +81,15 @@ namespace StricklandPropane.Controllers
             return View(vm);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            // TODO(taylorjoshuaw): Add logging here
+            return RedirectToAction("Index", "Home");
+        }
+
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Register()
