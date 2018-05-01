@@ -153,6 +153,11 @@ namespace StricklandPropane.Controllers
             return View(vm);
         }
 
+        public async Task<IActionResult> Profile()
+        {
+            return View(await _userManager.GetUserAsync(HttpContext.User));
+        }
+
         private IActionResult RedirectToLocal(string returnUrl)
         {
             if (Url.IsLocalUrl(returnUrl))
