@@ -33,7 +33,8 @@ namespace StricklandPropane.Components
                 return View(new List<BasketItem>());
             }
 
-            Basket basket = await _basketDbContext.Baskets.FindAsync(user.CurrentBasketId.Value);
+            Basket basket = await _basketDbContext.Baskets.Include(b => b.Items)
+                                                          .FirstOrDefaultAsync(b => b.Id == user.CurrentBasketId.Value);
 
             // If we couldn't find the basket, items weren't found, or the basket has
             // already been closed, then just pass an empty list to the view
@@ -42,7 +43,7 @@ namespace StricklandPropane.Components
                 return View(new List<BasketItem>());
             }
 
-            return View(basket.Items);
+            return View(basket.Items.ToList());
         }
     }
 }
