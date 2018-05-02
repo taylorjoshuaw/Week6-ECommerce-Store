@@ -7,6 +7,9 @@
 <h2>Howdy@(User.Identity.IsAuthenticated ? $", {User.Identity.Name}!" : "!")</h2>
 <h3>We got propane and propane accessories. Everything you need to taste the meat, not the heat.</h3>
 
+<hr />
+@await Component.InvokeAsync("BasketDetails")
+
 @if (Model.Count() < 1)
 {
     <p>Uh.....we actually don't have any products yet. Whoops!</p>
