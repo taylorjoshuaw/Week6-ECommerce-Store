@@ -1,0 +1,10 @@
+﻿@model BasketAdderViewModel
+
+<!-- To be removed -->
+
+<form asp-controller="Basket" asp-action="AddItem" method="post">
+    <input hidden asp-for="ReturnUrl" />
+    <input hidden asp-for="ProductId" />
+    <input asp-for="Quantity" placeholder="Qty" />
+    <button type="submit">Add To Basket</button>
+</form>

@@ -34,10 +34,21 @@ namespace StricklandPropane.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddItem(long productId, int quantity, string returnUrl = null)
+        public async Task<IActionResult> AddItem(
+            [Bind("ProductId", "Quantity", "ReturnUrl")] BasketAdderViewModel vm)
         {
+            // Server-side validation for view components might be tricky. For now,
+            // redirect the user to the Shop Index. jQuery client-side validation will
+            // improve this experience once implemented
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Index", "Shop");
+            }
+
             ApplicationUser user = await _userManager.GetUserAsync(HttpContext.User);
-            Basket basket = await _basketDbContext.Baskets.FindAsync(user.CurrentBasketId.Value);
+
+            Basket basket = user.CurrentBasketId.HasValue ? 
+                await _basketDbContext.Baskets.FindAsync(user.CurrentBasketId) : null;
 
             // If the user doesn't have an open basket yet, then create one
             if (basket is null || basket.Closed)
@@ -58,7 +69,7 @@ namespace StricklandPropane.Controllers
             }
 
             BasketItem item = await _basketDbContext.BasketItems.FirstOrDefaultAsync(bi => bi.BasketId == basket.Id &&
-                                                                                           bi.ProductId == productId);
+                                                                                           bi.ProductId == vm.ProductId);
             // If the basket item doesn't exist then create it. Otherwise, just add the specified
             // quantity to the existing item
             if (item is null)
@@ -66,20 +77,20 @@ namespace StricklandPropane.Controllers
                 await _basketDbContext.BasketItems.AddAsync(new BasketItem()
                 {
                     BasketId = basket.Id,
-                    ProductId = productId,
-                    Quantity = quantity,
+                    ProductId = vm.ProductId,
+                    Quantity = vm.Quantity,
                     UserId = user.Id
                 });
             }
             else
             {
-                item.Quantity += quantity;
+                item.Quantity += vm.Quantity;
                 _basketDbContext.BasketItems.Update(item);
             }
 
             // Save changes and return the user to whence they came
             await _basketDbContext.SaveChangesAsync();
-            return RedirectToLocal(returnUrl);
+            return RedirectToLocal(vm.ReturnUrl);
         }
 
         /// <summary>

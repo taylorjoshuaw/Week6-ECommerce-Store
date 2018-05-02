@@ -29,5 +29,11 @@ else
             <dt>Image</dt>
             <dd><img src="@product.ImageHref" /></dd>
         </dl>
+        @await Html.PartialAsync("_BasketAdderPartial", new BasketAdderViewModel()
+        {
+            ProductId = product.Id,
+            Quantity = 1,
+            ReturnUrl = Url.RouteUrl(ViewContext.RouteData.Values)
+        });
     }
 }
