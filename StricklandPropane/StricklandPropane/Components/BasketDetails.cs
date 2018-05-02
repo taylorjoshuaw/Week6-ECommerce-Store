@@ -24,17 +24,20 @@ namespace StricklandPropane.Components
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            if (!User.Identity.IsAuthenticated)
+            ApplicationUser user = await _userManager.GetUserAsync(HttpContext.User);
+
+            // If the user is not signed in or doesn't have a basket yet, just pass
+            // an empty list to the view
+            if (user is null || !user.CurrentBasketId.HasValue)
             {
                 return View(new List<BasketItem>());
             }
 
-            string userId = _userManager.GetUserId(HttpContext.User);
+            Basket basket = await _basketDbContext.Baskets.FindAsync(user.CurrentBasketId.Value);
 
-            return View(await _basketDbContext.BasketItems.Where(bi => bi.UserId == userId)
-                                                          .Include(bi => bi.Basket)
-                                                          .Where(bi => !bi.Basket.Closed)
-                                                          .ToListAsync());
+            // If the user's current basket is found, pass it to the view. Otherwise
+            // pass in an empty list
+            return View(basket?.Items ?? new List<BasketItem>());
         }
     }
 }

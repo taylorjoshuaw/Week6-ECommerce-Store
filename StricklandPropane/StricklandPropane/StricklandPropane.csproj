@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20180502181122_ApplicationUserCurrentBasket.cs" />
+    <Compile Remove="Migrations\20180502181122_ApplicationUserCurrentBasket.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

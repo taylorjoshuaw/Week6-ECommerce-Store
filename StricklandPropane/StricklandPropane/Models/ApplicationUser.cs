@@ -18,6 +18,8 @@ namespace StricklandPropane.Models
         public State HomeState { get; set; }
         [Display(Name = "Grilling Preference")]
         public GrillingPreference GrillingPreference { get; set; }
+
+        public long? CurrentBasketId { get; set; }
     }
 
     public static class ApplicationRoles
