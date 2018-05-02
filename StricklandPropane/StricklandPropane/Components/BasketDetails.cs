@@ -35,9 +35,14 @@ namespace StricklandPropane.Components
 
             Basket basket = await _basketDbContext.Baskets.FindAsync(user.CurrentBasketId.Value);
 
-            // If the user's current basket is found, pass it to the view. Otherwise
-            // pass in an empty list
-            return View(basket?.Items ?? new List<BasketItem>());
+            // If we couldn't find the basket, items weren't found, or the basket has
+            // already been closed, then just pass an empty list to the view
+            if (basket is null || basket.Items is null || basket.Closed)
+            {
+                return View(new List<BasketItem>());
+            }
+
+            return View(basket.Items);
         }
     }
 }
