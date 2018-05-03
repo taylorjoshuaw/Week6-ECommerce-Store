@@ -7,7 +7,7 @@ namespace StricklandPropane.Models
 {
     public class BasketDetailsViewModel
     {
-        public List<BasketItem> Items { get; set; }
+        public ICollection<BasketItem> Items { get; set; }
         public int TotalQuantity { get; set; }
         public decimal TotalPrice { get; set; }
     }

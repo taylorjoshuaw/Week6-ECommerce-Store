@@ -1,7 +1,7 @@
 ﻿@model BasketDetailsViewModel
 
 <div class="card">
-    @if (Model.Items != null & Model.Items.Count > 0)
+    @if (Model.Items != null && Model.Items.Count > 0)
     {
         <div class="card-header">
             <i class="material-icons">shopping_cart</i>
@@ -34,7 +34,7 @@
                         <td>@Model.TotalQuantity</td>
                         <td>Grand Total</td>
                         <td></td>
-                        <td>@Model.TotalPrice</td>
+                        <td>$@Model.TotalPrice</td>
                     </tr>
                 </tfoot>
             </table>

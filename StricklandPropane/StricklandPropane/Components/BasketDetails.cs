@@ -24,32 +24,35 @@ namespace StricklandPropane.Components
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            ApplicationUser user = await _userManager.GetUserAsync(HttpContext.User);
+            // Always create a view model to avoid the view component view trying
+            // to take the current action's model (possible MVC bug?)
+            BasketDetailsViewModel bvm = new BasketDetailsViewModel();
 
-            // If the user is not signed in or doesn't have a basket yet, just pass
-            // an empty list to the view
-            if (user is null || !user.CurrentBasketId.HasValue)
+            long? currentBasketId =
+                (await _userManager.GetUserAsync(HttpContext.User))?.CurrentBasketId;
+
+            // If the user is logged in and has a basket, fill in the view model;
+            // otherwise, the default values will suffice
+            if (currentBasketId.HasValue)
             {
-                return View(new List<BasketItem>());
+                // Retrieve all of the items in the current basket, making sure
+                // to include the Product navigational property
+                bvm.Items = await _productDbContext.Baskets.Where(b => b.Id == currentBasketId)
+                                                           .Include(b => b.Items)
+                                                           .SelectMany(b => b.Items)
+                                                           .Include(bi => bi.Product)
+                                                           .ToListAsync();
+
+                // Find the total quantity in the basket by summing each line item's quantity
+                bvm.TotalQuantity = bvm.Items.Select(bi => bi.Quantity)
+                                             .Sum();
+
+                // Find the grand total price in the basket by summing the products of each
+                // line item's quantity by its product's price. The Product navigational
+                // property was already included in the Items LINQ expression seen above.
+                bvm.TotalPrice = bvm.Items.Select(bi => bi.Quantity * bi.Product.Price)
+                                          .Sum();
             }
-
-            BasketDetailsViewModel bvm = new BasketDetailsViewModel()
-            {
-                Items = await _productDbContext.Baskets.Include(b => b.Items)
-                                                       .SelectMany(b => b.Items)
-                                                       .Include(bi => bi.Product)
-                                                       .ToListAsync()
-            };
-
-            // Find the total quantity in the basket by summing each line item's quantity
-            bvm.TotalQuantity = bvm.Items.Select(bi => bi.Quantity)
-                                         .Sum();
-
-            // Find the grand total price in the basket by summing the products of each
-            // line item's quantity by its product's price. The Product navigational
-            // property was already included in the Items LINQ expression seen above.
-            bvm.TotalPrice = bvm.Items.Select(bi => bi.Quantity * bi.Product.Price)
-                                      .Sum();
 
             return View(bvm);
         }

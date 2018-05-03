@@ -4,10 +4,37 @@
     ViewBag.Title = "Product Details";
 }
 
-<a asp-action="Index">Return to shopping...</a><br />
+<div class="row">
+    <div class="col-xl-8">
+        <div class="col-xl-10 offset-xl-1">
+            <div class="card">
+                <p class="card-header h2">@Html.DisplayFor(p => p.Name)</p>
+                <div class="card-body pb-0">
+                    <div class="row">
+                        <div class="col-xl-8">
+                            @Html.DisplayFor(p => p.Description)
+                            <img src="@Model.ImageHref" class="card-img-bottom mt-4 col-xl-8 mx-auto d-block" />
+                        </div>
+                        <div class="col-xl-4 text-right">
+                            <p class="h2 text-primary text-center">@Html.DisplayFor(p => p.Price) Each</p>
+                            @await Html.PartialAsync("_BasketAdderPartial", new BasketAdderViewModel()
+                            {
+                                ProductId = Model.Id,
+                                Quantity = 1,
+                                ReturnUrl = Url.RouteUrl(ViewContext.RouteData.Values)
+                            })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4">
+        @await Component.InvokeAsync("BasketDetails")
+    </div>
+</div>
 
-<h2>@Model.Name Details</h2>
-
+<!--
 <dl>
     <dt>@Html.DisplayNameFor(p => p.Name)</dt>
     <dd>@Html.DisplayFor(p => p.Name)</dd>
@@ -32,3 +59,4 @@
         <dd>@Html.DisplayFor(p => p.PolicyRequirement)</dd>
     }
 </dl>
+-->
