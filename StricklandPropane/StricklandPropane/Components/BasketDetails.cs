@@ -12,13 +12,13 @@ namespace StricklandPropane.Components
 {
     public class BasketDetails : ViewComponent
     {
-        private readonly BasketDbContext _basketDbContext;
+        private readonly ProductDbContext _productDbContext;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public BasketDetails(BasketDbContext basketDbContext,
+        public BasketDetails(ProductDbContext productDbContext,
             UserManager<ApplicationUser> userManager)
         {
-            _basketDbContext = basketDbContext;
+            _productDbContext = productDbContext;
             _userManager = userManager;
         }
 
@@ -33,17 +33,12 @@ namespace StricklandPropane.Components
                 return View(new List<BasketItem>());
             }
 
-            Basket basket = await _basketDbContext.Baskets.Include(b => b.Items)
-                                                          .FirstOrDefaultAsync(b => b.Id == user.CurrentBasketId.Value);
+            List<BasketItem> items = await _productDbContext.Baskets.Include(b => b.Items)
+                                                                    .SelectMany(b => b.Items)
+                                                                    .Include(bi => bi.Product)
+                                                                    .ToListAsync();
 
-            // If we couldn't find the basket, items weren't found, or the basket has
-            // already been closed, then just pass an empty list to the view
-            if (basket is null || basket.Items is null || basket.Closed)
-            {
-                return View(new List<BasketItem>());
-            }
-
-            return View(basket.Items.ToList());
+            return View(items);
         }
     }
 }

@@ -7,6 +7,10 @@
   <ItemGroup>
     <Compile Remove="Migrations\20180502181122_ApplicationUserCurrentBasket.cs" />
     <Compile Remove="Migrations\20180502181122_ApplicationUserCurrentBasket.Designer.cs" />
+    <Compile Remove="Migrations\ProductDb\20180503004936_RefactorBasket.cs" />
+    <Compile Remove="Migrations\ProductDb\20180503004936_RefactorBasket.Designer.cs" />
+    <Compile Remove="Migrations\ProductDb\20180503005130_RefactorBasket.cs" />
+    <Compile Remove="Migrations\ProductDb\20180503005130_RefactorBasket.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

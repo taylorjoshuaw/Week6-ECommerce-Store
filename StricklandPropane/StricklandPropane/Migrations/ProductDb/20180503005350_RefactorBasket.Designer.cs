@@ -8,12 +8,13 @@ using Microsoft.EntityFrameworkCore.Storage.Internal;
 using StricklandPropane.Data;
 using System;
 
-namespace StricklandPropane.Migrations.BasketDb
+namespace StricklandPropane.Migrations.ProductDb
 {
-    [DbContext(typeof(BasketDbContext))]
-    partial class BasketDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(ProductDbContext))]
+    [Migration("20180503005350_RefactorBasket")]
+    partial class RefactorBasket
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,7 +56,33 @@ namespace StricklandPropane.Migrations.BasketDb
 
                     b.HasIndex("BasketId");
 
+                    b.HasIndex("ProductId");
+
                     b.ToTable("BasketItems");
+                });
+
+            modelBuilder.Entity("StricklandPropane.Models.Product", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(4096);
+
+                    b.Property<string>("ImageHref");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100);
+
+                    b.Property<string>("PolicyRequirement");
+
+                    b.Property<decimal>("Price");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("StricklandPropane.Models.BasketItem", b =>
@@ -63,6 +90,11 @@ namespace StricklandPropane.Migrations.BasketDb
                     b.HasOne("StricklandPropane.Models.Basket", "Basket")
                         .WithMany("Items")
                         .HasForeignKey("BasketId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("StricklandPropane.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

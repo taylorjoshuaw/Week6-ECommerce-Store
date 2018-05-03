@@ -12,6 +12,7 @@ namespace StricklandPropane.Models
 
         [Required]
         public long ProductId { get; set; }
+        public Product Product { get; set; }
 
         [Required]
         public string UserId { get; set; }

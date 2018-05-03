@@ -1,4 +1,32 @@
 ﻿@model List<BasketItem>
 
 <i class="material-icons">shopping_cart</i>
-<strong>@(Model != null ? Model.Count.ToString() : "0")</strong>
+@if (Model != null && Model.Count > 0)
+{
+    <strong>@Model.Count</strong>
+    <table>
+        <thead>
+            <tr>
+                <th>Qty</th>
+                <th>Product</th>
+                <th>Unit Price</th>
+                <th>Total Price</th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Quantity</td>
+                    <td>@item.Product.Name</td>
+                    <td>$@item.Product.Price</td>
+                    <td>$@(item.Quantity * item.Product.Price)</td>
+                </tr>
+            }
+        </thead>
+    </table>
+}
+else
+{
+    <strong>0</strong>
+}
+

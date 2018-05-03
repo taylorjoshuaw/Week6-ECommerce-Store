@@ -17,14 +17,12 @@ namespace StricklandPropane.Controllers
     public class BasketController : Controller
     {
         private readonly ProductDbContext _productDbContext;
-        private readonly BasketDbContext _basketDbContext;
         private readonly UserManager<ApplicationUser> _userManager;
 
         public BasketController(ProductDbContext productDbContext,
-            BasketDbContext basketDbContext, UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager)
         {
             _productDbContext = productDbContext;
-            _basketDbContext = basketDbContext;
             _userManager = userManager;
         }
 
@@ -48,19 +46,19 @@ namespace StricklandPropane.Controllers
             ApplicationUser user = await _userManager.GetUserAsync(HttpContext.User);
 
             Basket basket = user.CurrentBasketId.HasValue ? 
-                await _basketDbContext.Baskets.FindAsync(user.CurrentBasketId) : null;
+                await _productDbContext.Baskets.FindAsync(user.CurrentBasketId) : null;
 
             // If the user doesn't have an open basket yet, then create one
             if (basket is null || basket.Closed)
             {
-                basket = (await _basketDbContext.Baskets.AddAsync(new Basket()
+                basket = (await _productDbContext.Baskets.AddAsync(new Basket()
                 {
                     Closed = false,
                     CreationTime = DateTime.UtcNow,
                     UserId = user.Id
                 })).Entity;
 
-                await _basketDbContext.SaveChangesAsync();
+                await _productDbContext.SaveChangesAsync();
 
                 // Set the user's current basket id to the new basket manually
                 // since the user exists on a different context than the basket
@@ -68,13 +66,13 @@ namespace StricklandPropane.Controllers
                 await _userManager.UpdateAsync(user);
             }
 
-            BasketItem item = await _basketDbContext.BasketItems.FirstOrDefaultAsync(bi => bi.BasketId == basket.Id &&
+            BasketItem item = await _productDbContext.BasketItems.FirstOrDefaultAsync(bi => bi.BasketId == basket.Id &&
                                                                                            bi.ProductId == vm.ProductId);
             // If the basket item doesn't exist then create it. Otherwise, just add the specified
             // quantity to the existing item
             if (item is null)
             {
-                await _basketDbContext.BasketItems.AddAsync(new BasketItem()
+                await _productDbContext.BasketItems.AddAsync(new BasketItem()
                 {
                     BasketId = basket.Id,
                     ProductId = vm.ProductId,
@@ -85,11 +83,11 @@ namespace StricklandPropane.Controllers
             else
             {
                 item.Quantity += vm.Quantity;
-                _basketDbContext.BasketItems.Update(item);
+                _productDbContext.BasketItems.Update(item);
             }
 
             // Save changes and return the user to whence they came
-            await _basketDbContext.SaveChangesAsync();
+            await _productDbContext.SaveChangesAsync();
             return RedirectToLocal(vm.ReturnUrl);
         }
 
