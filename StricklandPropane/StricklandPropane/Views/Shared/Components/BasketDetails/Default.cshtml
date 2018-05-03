@@ -4,15 +4,16 @@
 @if (Model != null && Model.Count > 0)
 {
     <strong>@Model.Count</strong>
-    <table>
-        <thead>
+    <table class="table table-responsive table-hover mt-2">
+        <thead class="thead-light">
             <tr>
                 <th>Qty</th>
                 <th>Product</th>
                 <th>Unit Price</th>
                 <th>Total Price</th>
             </tr>
-
+        </thead>
+        <tbody>
             @foreach (var item in Model)
             {
                 <tr>
@@ -22,7 +23,7 @@
                     <td>$@(item.Quantity * item.Product.Price)</td>
                 </tr>
             }
-        </thead>
+        </tbody>
     </table>
 }
 else
