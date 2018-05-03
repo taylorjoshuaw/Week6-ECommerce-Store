@@ -33,12 +33,25 @@ namespace StricklandPropane.Components
                 return View(new List<BasketItem>());
             }
 
-            List<BasketItem> items = await _productDbContext.Baskets.Include(b => b.Items)
-                                                                    .SelectMany(b => b.Items)
-                                                                    .Include(bi => bi.Product)
-                                                                    .ToListAsync();
+            BasketDetailsViewModel bvm = new BasketDetailsViewModel()
+            {
+                Items = await _productDbContext.Baskets.Include(b => b.Items)
+                                                       .SelectMany(b => b.Items)
+                                                       .Include(bi => bi.Product)
+                                                       .ToListAsync()
+            };
 
-            return View(items);
+            // Find the total quantity in the basket by summing each line item's quantity
+            bvm.TotalQuantity = bvm.Items.Select(bi => bi.Quantity)
+                                         .Sum();
+
+            // Find the grand total price in the basket by summing the products of each
+            // line item's quantity by its product's price. The Product navigational
+            // property was already included in the Items LINQ expression seen above.
+            bvm.TotalPrice = bvm.Items.Select(bi => bi.Quantity * bi.Product.Price)
+                                      .Sum();
+
+            return View(bvm);
         }
     }
 }

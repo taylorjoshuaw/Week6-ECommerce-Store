@@ -4,46 +4,53 @@
     ViewBag.Title = "Register";
 }
 
-<form method="post" asp-action="Register">
-    <div asp-validation-summary="ModelOnly"></div>
+<div class="col-xl-5 mx-auto">
+    <div class="card">
+        <p class="card-header">Register a New Account...</p>
+        <div class="card-body">
+            <form method="post" asp-action="Register">
+                <div asp-validation-summary="ModelOnly"></div>
 
-    <label asp-for="Email"></label>
-    <input asp-for="Email" />
-    <span asp-validation-for="Email"></span>
-    <br />
+                <label asp-for="Email"></label>
+                <input class="form-control" asp-for="Email" />
+                <span asp-validation-for="Email"></span>
+                <br />
 
-    <label asp-for="Password"></label>
-    <input asp-for="Password" />
-    <span asp-validation-for="Password"></span>
-    <br />
+                <label asp-for="Password"></label>
+                <input class="form-control" asp-for="Password" />
+                <span asp-validation-for="Password"></span>
+                <br />
 
-    <label asp-for="ConfirmPassword"></label>
-    <input asp-for="ConfirmPassword" />
-    <span asp-validation-for="ConfirmPassword"></span>
-    <br />
+                <label asp-for="ConfirmPassword"></label>
+                <input class="form-control" asp-for="ConfirmPassword" />
+                <span asp-validation-for="ConfirmPassword"></span>
+                <br />
 
-    <label asp-for="FirstName"></label>
-    <input asp-for="FirstName" />
-    <span asp-validation-for="FirstName"></span>
-    <br />
+                <label asp-for="FirstName"></label>
+                <input class="form-control" asp-for="FirstName" />
+                <span asp-validation-for="FirstName"></span>
+                <br />
 
-    <label asp-for="LastName"></label>
-    <input asp-for="LastName" />
-    <span asp-validation-for="LastName"></span>
-    <br />
+                <label asp-for="LastName"></label>
+                <input class="form-control" asp-for="LastName" />
+                <span asp-validation-for="LastName"></span>
+                <br />
 
-    <label asp-for="HomeState"></label>
-    <select asp-for="HomeState" asp-items="@Html.GetEnumSelectList(typeof(State))">
-    </select>
-    <span asp-validation-for="HomeState"></span>
-    <br />
+                <label asp-for="HomeState"></label>
+                <select class="form-control" asp-for="HomeState" asp-items="@Html.GetEnumSelectList(typeof(State))"></select>
+                <span asp-validation-for="HomeState"></span>
+                <br />
 
-    <label asp-for="GrillingPreference"></label>
-    <select asp-for="GrillingPreference" asp-items="@Html.GetEnumSelectList(typeof(GrillingPreference))">
-    </select>
-    <span asp-validation-for="GrillingPreference"></span>
-    <br />
+                <label asp-for="GrillingPreference"></label>
+                <select class="form-control" asp-for="GrillingPreference" asp-items="@Html.GetEnumSelectList(typeof(GrillingPreference))"></select>
+                <span asp-validation-for="GrillingPreference"></span>
+                <br />
 
-    <button type="reset">Reset</button>
-    <button type="submit">Register</button>
-</form>
+                <div class="btn-group float-right">
+                    <button class="btn btn-secondary" type="reset">Reset</button>
+                    <button class="btn btn-success" type="submit">Register</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

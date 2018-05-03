@@ -1,11 +1,11 @@
-﻿@model List<BasketItem>
+﻿@model BasketDetailsViewModel
 
 <div class="card">
-    @if (Model != null && Model.Count > 0)
+    @if (Model.Items != null & Model.Items.Count > 0)
     {
         <div class="card-header">
             <i class="material-icons">shopping_cart</i>
-            <strong>@Model.Count</strong>
+            <strong>@Model.Items.Count</strong>
             <strong class="d-none d-xl-inline">Products in Shopping Basket</strong>
         </div>
         <div class="card-body py-2 px-3">
@@ -19,7 +19,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model)
+                    @foreach (var item in Model.Items)
                     {
                         <tr>
                             <td>@item.Quantity</td>
@@ -29,6 +29,14 @@
                         </tr>
                     }
                 </tbody>
+                <tfoot class="table-info">
+                    <tr>
+                        <td>@Model.TotalQuantity</td>
+                        <td>Grand Total</td>
+                        <td></td>
+                        <td>@Model.TotalPrice</td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     }
