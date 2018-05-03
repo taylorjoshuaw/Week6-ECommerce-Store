@@ -1,33 +1,43 @@
 ﻿@model List<BasketItem>
 
-<i class="material-icons">shopping_cart</i>
-@if (Model != null && Model.Count > 0)
-{
-    <strong>@Model.Count</strong>
-    <table class="table table-responsive table-hover mt-2">
-        <thead class="thead-light">
-            <tr>
-                <th>Qty</th>
-                <th>Product</th>
-                <th>Unit Price</th>
-                <th>Total Price</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.Quantity</td>
-                    <td>@item.Product.Name</td>
-                    <td>$@item.Product.Price</td>
-                    <td>$@(item.Quantity * item.Product.Price)</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-else
-{
-    <strong>0</strong>
-}
-
+<div class="card">
+    @if (Model != null && Model.Count > 0)
+    {
+        <div class="card-header">
+            <i class="material-icons">shopping_cart</i>
+            <strong>@Model.Count</strong>
+            <strong class="d-none d-xl-inline">Products in Shopping Basket</strong>
+        </div>
+        <div class="card-body py-2 px-3">
+            <table class="table table-hover mt-2">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Qty</th>
+                        <th>Product</th>
+                        <th>Unit</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Quantity</td>
+                            <td>@item.Product.Name</td>
+                            <td>$@item.Product.Price</td>
+                            <td>$@(item.Quantity * item.Product.Price)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="card-header">
+            <strong>0</strong>
+            <strong class="d-none d-xl-inline">Items in Shopping Basket</strong>
+        </div>
+    }
+</div>
+    </div>

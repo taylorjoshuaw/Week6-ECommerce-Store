@@ -22,7 +22,6 @@ namespace StricklandPropane.Models
         [DataType(DataType.Currency)]
         public decimal Price { get; set; }
 
-        [Url]
         public string ImageHref { get; set; }
 
         [Display(Name = "Requires a user policy to view?")]
