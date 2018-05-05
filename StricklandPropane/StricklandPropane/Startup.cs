@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Html;
 using StricklandPropane.Data;
 using StricklandPropane.Models;
 using StricklandPropane.Models.Policies;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authentication.Twitter;
 
 namespace StricklandPropane
 {
@@ -28,11 +30,19 @@ namespace StricklandPropane
 
         public void ConfigureServices(IServiceCollection services)
         {
+            /*
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDbContext<ProductDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            */
+
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(Configuration["DbPass"]));
+
+            services.AddDbContext<ProductDbContext>(options =>
+                options.UseSqlServer(Configuration["DbPass"]));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -43,6 +53,12 @@ namespace StricklandPropane
                 options.Cookie.HttpOnly = true;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
                 options.LoginPath = "/Account/Login";
+            });
+
+            services.AddAuthentication().AddTwitter(twitterOptions =>
+            {
+                twitterOptions.ConsumerKey = Configuration["TwitterConsumerKey"];
+                twitterOptions.ConsumerSecret = Configuration["TwitterConsumerSecret"];
             });
 
             services.AddAuthorization(options =>
