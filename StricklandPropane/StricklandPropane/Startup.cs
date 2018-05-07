@@ -59,6 +59,7 @@ namespace StricklandPropane
             {
                 twitterOptions.ConsumerKey = Configuration["TwitterConsumerKey"];
                 twitterOptions.ConsumerSecret = Configuration["TwitterConsumerSecret"];
+                twitterOptions.RetrieveUserDetails = true;
             });
 
             services.AddAuthorization(options =>
@@ -67,6 +68,11 @@ namespace StricklandPropane
                 options.AddPolicy(ApplicationPolicies.MemberOnly, p => p.RequireRole(ApplicationRoles.Member, ApplicationRoles.Admin));
                 options.AddPolicy(ApplicationPolicies.TexansOnly, p => p.RequireClaim(ClaimTypes.StateOrProvince, ((int)State.Texas).ToString()));
                 options.AddPolicy(ApplicationPolicies.PropaneAdvocatesOnly, p => p.RequireClaim("GrillingPreference", ((int)GrillingPreference.Propane).ToString()));
+            });
+
+            services.Configure<MvcOptions>(options =>
+            {
+                options.Filters.Add(new RequireHttpsAttribute());
             });
 
             services.AddMvc();

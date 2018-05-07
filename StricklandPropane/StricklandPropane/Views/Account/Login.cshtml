@@ -1,11 +1,17 @@
-﻿@model LoginViewModel
+﻿@using System.Collections.Generic
+@using System.Linq
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http.Authentication
+@model LoginViewModel
+@inject SignInManager<ApplicationUser> SignInManager
 
 @{
     ViewBag.Title = "Login";
 }
 
 <div class="row">
-    <div class="col-xl-4 mx-auto">
+    <div class="col-xl-4">
         <div class="card">
             <p class="card-header">Log In...</p>
             <div class="card-body">
@@ -21,6 +27,24 @@
                         <button class="btn btn-success" type="submit">Log In</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4">
+        <div class="card">
+            <p class="card-header">External Login Providers</p>
+            <div class="card-body">
+                @{
+                    var loginProviders = (await SignInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+                    <form asp-action="ExternalLogin" method="post">
+                        @foreach (var provider in loginProviders)
+                        {
+                        <button type="submit" name="provider" value="@provider.Name">@provider.Name</button>
+                        }
+                    </form>
+                }
             </div>
         </div>
     </div>
