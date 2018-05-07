@@ -20,7 +20,7 @@ namespace StricklandPropane.Controllers
         private readonly ApplicationDbContext _dbContext;
 
         public AccountController(UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager, ApplicationDbContext dbContext) 
+            SignInManager<ApplicationUser> signInManager, ApplicationDbContext dbContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -79,6 +79,85 @@ namespace StricklandPropane.Controllers
             return View(vm);
         }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult ExternalRegister(string provider, string email)
+        {
+            return View(new ExternalRegisterViewModel()
+            {
+                Provider = provider,
+                Email = email
+            });
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ActionName("ExternalRegister")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CommitExternalRegister(ExternalRegisterViewModel ervm)
+        {
+            if (ModelState.IsValid)
+            {
+                ApplicationUser user = new ApplicationUser()
+                {
+                    Email = ervm.Email,
+                    NormalizedEmail = ervm.Email.ToLower(),
+                    UserName = ervm.Email,
+                    NormalizedUserName = ervm.Email.ToLower(),
+                    EmailConfirmed = true, // Skip e-mail verification for external logins
+
+                    FirstName = ervm.FirstName,
+                    LastName = ervm.LastName,
+                    GrillingPreference = ervm.GrillingPreference,
+                    HomeState = ervm.HomeState,
+                    ConcurrencyStamp = Guid.NewGuid().ToString(),
+                };
+
+                // Try to create the new user (with no password)
+                IdentityResult result = await _userManager.CreateAsync(user);
+
+                if (result.Succeeded)
+                {
+                    // Add default claims and member role to the new user
+                    await _userManager.AddClaimsAsync(user, GetDefaultClaimsListForUser(user));
+                    await _userManager.AddToRoleAsync(user, ApplicationRoles.Member);
+
+                    // Sign the user in and redirect them back to whence they came
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+
+                    // Try to get the user's external login provider information
+                    var info = await _signInManager.GetExternalLoginInfoAsync();
+
+                    // Could not get the external login info
+                    if (info is null)
+                    {
+                        return RedirectToAction(nameof(Login));
+                    }
+
+                    // Add the user's external login provider
+                    await _userManager.AddLoginAsync(user, info);
+
+                    // If the user is an administrator, take them to the product administration
+                    // dashboard; otherwise, take the user to the products landing page
+                    if (await _userManager.IsInRoleAsync(user, ApplicationRoles.Admin))
+                    {
+                        return RedirectToAction("Index", "Products");
+                    }
+
+                    return RedirectToAction("Index", "Shop");
+                }
+
+                // Something went wrong. Accumulate all errors into the model state.
+                foreach (IdentityError error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+
+            // Something went wrong. Allow the user to try again
+            return View(ervm);
+        }
+
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -115,26 +194,21 @@ namespace StricklandPropane.Controllers
                 return RedirectToAction("Index", "Shop");
             }
 
-            ApplicationUser user = new ApplicationUser()
+            string externalPrincipalEmail = info.Principal.FindFirstValue(ClaimTypes.Email);
+            ApplicationUser user = await _userManager.FindByEmailAsync(externalPrincipalEmail);
+
+            if (user is null)
             {
-                Email = info.Principal.FindFirstValue(ClaimTypes.Email),
-                UserName = info.Principal.FindFirstValue(ClaimTypes.Email)
-            };
-
-            var userResult = await _userManager.CreateAsync(user);
-
-            if (userResult.Succeeded)
-            {
-                userResult = await _userManager.AddLoginAsync(user, info);
-
-                if (userResult.Succeeded)
-                {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Shop");
-                }
+                return RedirectToAction("ExternalRegister", new { provider = info.LoginProvider, email = externalPrincipalEmail });
             }
 
-            return RedirectToAction(nameof(Login), "Account");
+            if ((await _userManager.AddLoginAsync(user, info)).Succeeded)
+            {
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                return RedirectToAction("Index", "Shop");
+            }
+
+            return RedirectToAction(nameof(Login));
         }
 
         [HttpPost]

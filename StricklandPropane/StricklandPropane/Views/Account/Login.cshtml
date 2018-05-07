@@ -1,8 +1,5 @@
-﻿@using System.Collections.Generic
-@using System.Linq
+﻿@using System.Linq
 @using Microsoft.AspNetCore.Identity
-@using Microsoft.AspNetCore.Http
-@using Microsoft.AspNetCore.Http.Authentication
 @model LoginViewModel
 @inject SignInManager<ApplicationUser> SignInManager
 
@@ -41,7 +38,7 @@
                     <form asp-action="ExternalLogin" method="post">
                         @foreach (var provider in loginProviders)
                         {
-                        <button type="submit" name="provider" value="@provider.Name">@provider.Name</button>
+                            <button type="submit" name="provider" value="@provider.Name" class="btn btn-primary">@provider.Name</button>
                         }
                     </form>
                 }

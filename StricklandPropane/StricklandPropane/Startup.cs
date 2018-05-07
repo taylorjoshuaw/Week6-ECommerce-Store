@@ -55,12 +55,18 @@ namespace StricklandPropane
                 options.LoginPath = "/Account/Login";
             });
 
-            services.AddAuthentication().AddTwitter(twitterOptions =>
-            {
-                twitterOptions.ConsumerKey = Configuration["TwitterConsumerKey"];
-                twitterOptions.ConsumerSecret = Configuration["TwitterConsumerSecret"];
-                twitterOptions.RetrieveUserDetails = true;
-            });
+            services.AddAuthentication()
+                .AddTwitter(twitterOptions =>
+                {
+                    twitterOptions.ConsumerKey = Configuration["TwitterConsumerKey"];
+                    twitterOptions.ConsumerSecret = Configuration["TwitterConsumerSecret"];
+                    twitterOptions.RetrieveUserDetails = true;
+                })
+                .AddGoogle(googleOptions =>
+                {
+                    googleOptions.ClientId = Configuration["GoogleClientId"];
+                    googleOptions.ClientSecret = Configuration["GoogleClientSecret"];
+                });
 
             services.AddAuthorization(options =>
             {
