@@ -1,0 +1,12 @@
+﻿@model string
+
+@{
+    ViewBag.Title = "Sent Verification Email";
+}
+
+<h3>E-mail confirmation sent to @Model</h3>
+<form method="post">
+    <button type="submit" class="btn btn-secondary" name="email" value="@Model">
+        Re-send Verification E-mail
+    </button>
+</form>

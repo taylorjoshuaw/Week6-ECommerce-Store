@@ -197,17 +197,22 @@ namespace StricklandPropane.Controllers
             string externalPrincipalEmail = info.Principal.FindFirstValue(ClaimTypes.Email);
             ApplicationUser user = await _userManager.FindByEmailAsync(externalPrincipalEmail);
 
+            // If the user does not yet exist, redirect to the ExternalRegister action to
+            // get roles, claims, and some additional information added to the external account
             if (user is null)
             {
                 return RedirectToAction("ExternalRegister", new { provider = info.LoginProvider, email = externalPrincipalEmail });
             }
 
+            // If the user already exists but has never used the selected OAuth provider to log in,
+            // then add this provider to the user's account, sign in, and redirect to the shop
             if ((await _userManager.AddLoginAsync(user, info)).Succeeded)
             {
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 return RedirectToAction("Index", "Shop");
             }
 
+            // Something went wrong. Redirect to the login page.
             return RedirectToAction(nameof(Login));
         }
 
@@ -242,6 +247,7 @@ namespace StricklandPropane.Controllers
                     NormalizedEmail = vm.Email.ToLower(),
                     UserName = vm.Email,
                     NormalizedUserName = vm.Email.ToLower(),
+                    EmailConfirmed = false,
                     ConcurrencyStamp = Guid.NewGuid().ToString(),
 
                     FirstName = vm.FirstName,
@@ -258,6 +264,10 @@ namespace StricklandPropane.Controllers
                     await _userManager.AddClaimsAsync(user, GetDefaultClaimsListForUser(user));
                     await _userManager.AddToRoleAsync(user, ApplicationRoles.Member);
 
+                    return RedirectToAction("Verify", "Email", new { email = user.Email });
+
+                    /*
+                    // TODO(taylorjoshuaw): Redirect to e-mail verification instead of signing in
                     // Sign the user in and redirect them back to whence they came
                     await _signInManager.SignInAsync(user, isPersistent: true);
 
@@ -269,6 +279,7 @@ namespace StricklandPropane.Controllers
                     }
 
                     return RedirectToAction("Index", "Shop");
+                    */
                 }
 
                 // Something went wrong. Accumulate all errors into the model state.

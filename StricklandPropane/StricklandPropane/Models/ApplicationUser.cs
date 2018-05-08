@@ -20,6 +20,8 @@ namespace StricklandPropane.Models
         public GrillingPreference GrillingPreference { get; set; }
 
         public long? CurrentBasketId { get; set; }
+
+        public bool SentEmailVerification { get; set; }
     }
 
     public static class ApplicationRoles
