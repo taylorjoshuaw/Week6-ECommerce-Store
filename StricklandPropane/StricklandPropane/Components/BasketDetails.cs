@@ -22,11 +22,16 @@ namespace StricklandPropane.Components
             _userManager = userManager;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync()
+        public async Task<IViewComponentResult> InvokeAsync(
+            bool quantityInputs = true, bool checkoutButton = true)
         {
             // Always create a view model to avoid the view component view trying
             // to take the current action's model (possible MVC bug?)
-            BasketDetailsViewModel bvm = new BasketDetailsViewModel();
+            BasketDetailsViewModel bvm = new BasketDetailsViewModel()
+            {
+                QuantityInputs = quantityInputs,
+                CheckoutButton = checkoutButton,
+            };
 
             long? currentBasketId =
                 (await _userManager.GetUserAsync(HttpContext.User))?.CurrentBasketId;
@@ -42,6 +47,15 @@ namespace StricklandPropane.Components
                                                            .SelectMany(b => b.Items)
                                                            .Include(bi => bi.Product)
                                                            .ToListAsync();
+
+                if (bvm.QuantityInputs)
+                {
+                    bvm.Quantities = new Dictionary<long, int>();
+                    foreach (BasketItem item in bvm.Items)
+                    {
+                        bvm.Quantities[item.Id] = item.Quantity;
+                    }
+                }
 
                 // Find the total quantity in the basket by summing each line item's quantity
                 bvm.TotalQuantity = bvm.Items.Select(bi => bi.Quantity)

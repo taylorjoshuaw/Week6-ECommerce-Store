@@ -8,7 +8,7 @@
 }
 
 <div class="row">
-    <div class="col-xl-4">
+    <div class="col-xl-5 offset-xl-2">
         <div class="card">
             <p class="card-header">Log In...</p>
             <div class="card-body">
@@ -28,10 +28,10 @@
         </div>
     </div>
 
-    <div class="col-xl-4">
+    <div class="col-xl-3">
         <div class="card">
             <p class="card-header">External Login Providers</p>
-            <div class="card-body">
+            <div class="card-body text-center">
                 @{
                     var loginProviders = (await SignInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 

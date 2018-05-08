@@ -45,7 +45,7 @@ namespace StricklandPropane.Controllers
 
             ApplicationUser user = await _userManager.GetUserAsync(HttpContext.User);
 
-            Basket basket = user.CurrentBasketId.HasValue ? 
+            Basket basket = user.CurrentBasketId.HasValue ?
                 await _productDbContext.Baskets.FindAsync(user.CurrentBasketId) : null;
 
             // If the user doesn't have an open basket yet, then create one
@@ -89,6 +89,46 @@ namespace StricklandPropane.Controllers
             // Save changes and return the user to whence they came
             await _productDbContext.SaveChangesAsync();
             return RedirectToLocal(vm.ReturnUrl);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Update(BasketDetailsViewModel bvm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Index", "Shop");
+            }
+
+            foreach ((long itemId, int quantity) in bvm.Quantities)
+            {
+                BasketItem item = await _productDbContext.BasketItems.FindAsync(itemId);
+
+                if (item is null)
+                {
+                    continue;
+                }
+
+                // If the new quantity is greater than 0, then update; otherwise, delete
+                if (quantity > 0)
+                {
+                    item.Quantity = quantity;
+                    _productDbContext.BasketItems.Update(item);
+                }
+                else
+                {
+                    _productDbContext.Remove(item);
+                }
+            }
+
+            await _productDbContext.SaveChangesAsync();
+            return RedirectToLocal(bvm.ReturnUrl);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Checkout()
+        {
+            return View();
         }
 
         /// <summary>
