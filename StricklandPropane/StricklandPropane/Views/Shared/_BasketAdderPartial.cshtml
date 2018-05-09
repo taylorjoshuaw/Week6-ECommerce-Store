@@ -1,7 +1,7 @@
 ﻿@model BasketAdderViewModel
 
 <form class="form-inline row mt-2 justify-content-center" asp-controller="Basket" asp-action="AddItem" method="post">
-    <input hidden asp-for="ReturnUrl" value="" />
+    <input hidden asp-for="ReturnUrl" value="@(Context.Request.Path.Value ?? "")" />
     <input hidden asp-for="ProductId" />
     <input class="form-control col-3" asp-for="Quantity" placeholder="Qty" />
     <button class="btn btn-primary col-6 ml-2" type="submit">Add To Basket</button>

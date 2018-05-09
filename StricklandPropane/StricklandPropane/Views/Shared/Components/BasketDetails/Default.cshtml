@@ -43,23 +43,26 @@
                     <tfoot>
                         <tr class="row table-secondary">
                             <td class="col-xl-2"><span class="ml-1">@Model.TotalQuantity</span></td>
-                            <td class="col-xl-6">Grand Total</td>
+                            <td class="col-xl-6">Total</td>
                             <td class="col-xl-2"></td>
                             <td class="col-xl-2">$@Model.TotalPrice</td>
                         </tr>
                     </tfoot>
                 </table>
 
-                <div class="btn-group-sm text-right">
-                    @if (Model.QuantityInputs)
-                    {
-                        <button class="btn btn-warning" type="submit">Update</button>
-                    }
-                    @if (Model.CheckoutButton)
-                    {
-                        <a asp-controller="Basket" asp-action="Checkout" class="btn btn-success">Checkout</a>
-                    }
-                </div>
+                @if (Model.TotalQuantity > 0)
+                {
+                    <div class="btn-group-sm text-right">
+                        @if (Model.QuantityInputs)
+                        {
+                            <button class="btn btn-warning" type="submit">Update</button>
+                        }
+                        @if (Model.CheckoutButton)
+                        {
+                            <a asp-controller="Basket" asp-action="Checkout" class="btn btn-success">Checkout</a>
+                        }
+                    </div>
+                }
             </div>
         </form>
     }

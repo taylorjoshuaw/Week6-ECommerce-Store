@@ -128,7 +128,41 @@ namespace StricklandPropane.Controllers
         [HttpGet]
         public async Task<IActionResult> Checkout()
         {
-            return View();
+            ApplicationUser user = await _userManager.GetUserAsync(HttpContext.User);
+
+            // If the current user could not be found or they do not have a current basket
+            // then just redirect to the shop
+            if (user is null || !user.CurrentBasketId.HasValue)
+            {
+                // TODO(taylorjoshuaw): Add logging here
+                return RedirectToAction("Index", "Shop");
+            }
+
+            // If the user's basket has already been closed, just redirect to the shop
+            if ((await _productDbContext.Baskets.FindAsync(user.CurrentBasketId.Value))
+                                                .Closed)
+            {
+                return RedirectToAction("Index", "Shop");
+            }
+
+            // Try to find items matching the user's current basket
+            IQueryable<decimal> pricesQuery = _productDbContext.BasketItems.Where(bi => bi.BasketId == user.CurrentBasketId)
+                                                                           .Include(bi => bi.Product)
+                                                                           .Select(bi => bi.Product.Price);
+
+            // If there are no items in the basket, then just redirect to the shop
+            if ((await pricesQuery.CountAsync()) < 1)
+            {
+                return RedirectToAction("Index", "Shop");
+            }
+
+            // TODO(taylorjoshuaw): Do not hardcode this shipping amount!
+            //                      The user should have shipping options
+            return View(new CheckoutViewModel()
+            {
+                ItemsSubTotal = await pricesQuery.SumAsync(),
+                Shipping = 0.99M
+            });
         }
 
         /// <summary>

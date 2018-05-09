@@ -13,7 +13,6 @@ namespace StricklandPropane.Models
         [Range(1, int.MaxValue)]
         public int Quantity { get; set; }
 
-        [Url]
         public string ReturnUrl { get; set; }
     }
 }
