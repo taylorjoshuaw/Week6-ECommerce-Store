@@ -72,13 +72,22 @@ namespace StricklandPropane.Controllers
         {
             if (ModelState.IsValid)
             {
+                ApplicationUser user = await _userManager.FindByEmailAsync(vm.Email);
+                
+                // If the user has not confirmed their e-mail yet, then redirect them
+                // to the e-mail verification action
+                // TODO(taylorjoshuaw): Add a view that is more friendly than just the
+                //                      e-mail verification action
+                if (!user.EmailConfirmed)
+                {
+                    return RedirectToAction("Verify", "Email", new { email = vm.Email });
+                }
+
                 var result = await _signInManager.PasswordSignInAsync(vm.Email,
                     vm.Password, vm.KeepSignedIn, lockoutOnFailure: false);
 
                 if (result.Succeeded)
                 {
-                    ApplicationUser user = await _userManager.FindByEmailAsync(vm.Email);
-
                     // If the user is an administrator, take them to the product administration
                     // dashboard; otherwise, take the user to the products landing page
                     if (await _userManager.IsInRoleAsync(user, ApplicationRoles.Admin))
