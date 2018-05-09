@@ -1,0 +1,45 @@
+﻿@model IEnumerable<Product>
+
+@{
+    ViewBag.Title = "Shopping";
+}
+
+<h2>Howdy@(User.Identity.IsAuthenticated ? $", {User.Identity.Name}!" : "!")</h2>
+<h3>We got propane and propane accessories. Everything you need to taste the meat, not the heat.</h3>
+<hr />
+<div class="row">
+    <div class="col-xl-8">
+        @if (Model.Count() < 1)
+        {
+            <p>Uh.....we actually don't have any products yet. Whoops!</p>
+        }
+        else
+        {
+            <div class="row">
+                @foreach (var product in Model)
+                {
+                    <div class="col-4">
+                        <div class="card">
+                            <a asp-action="Details" asp-route-id="@product.Id" class="card-header">@product.Name</a>
+                            <div class="card-body">
+                                <p>@product.Description</p>
+                            </div>
+                            <img src="@product.ImageHref" class="card-img-bottom" />
+                            <div class="card-footer">
+                                <strong class="d-none d-xl-inline">Price Per Item: </strong><strong>$@product.Price</strong>
+                                @await Html.PartialAsync("_BasketAdderPartial", new BasketAdderViewModel()
+                                {
+                                    ProductId = product.Id,
+                                    Quantity = 1
+                                })
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+    <div class="col-xl-4">
+        @await Component.InvokeAsync("BasketDetails")
+    </div>
+</div>

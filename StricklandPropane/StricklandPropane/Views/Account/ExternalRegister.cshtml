@@ -1,0 +1,44 @@
+﻿@model ExternalRegisterViewModel
+
+@{
+    ViewBag.Title = $"Create Profile for {Model.Provider}";
+}
+
+<div class="col-xl-5 mx-auto">
+    <div class="card">
+        <p class="card-header">Create New Profile For @Model.Provider Login</p>
+        <div class="card-body">
+            <form method="post" asp-action="ExternalRegister">
+                <div asp-validation-summary="ModelOnly"></div>
+
+                <input hidden asp-for="Provider" value="@Model.Provider" />
+                <input hidden asp-for="Email" value="@Model.Email" />
+
+                <label asp-for="FirstName"></label>
+                <input class="form-control" asp-for="FirstName" />
+                <span asp-validation-for="FirstName"></span>
+                <br />
+
+                <label asp-for="LastName"></label>
+                <input class="form-control" asp-for="LastName" />
+                <span asp-validation-for="LastName"></span>
+                <br />
+
+                <label asp-for="HomeState"></label>
+                <select class="form-control" asp-for="HomeState" asp-items="@Html.GetEnumSelectList(typeof(State))"></select>
+                <span asp-validation-for="HomeState"></span>
+                <br />
+
+                <label asp-for="GrillingPreference"></label>
+                <select class="form-control" asp-for="GrillingPreference" asp-items="@Html.GetEnumSelectList(typeof(GrillingPreference))"></select>
+                <span asp-validation-for="GrillingPreference"></span>
+                <br />
+
+                <div class="btn-group float-right">
+                    <button class="btn btn-secondary" type="reset">Reset</button>
+                    <button class="btn btn-success" type="submit">Create Profile</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,41 @@
+﻿@model Product
+
+@{
+    ViewBag.Title = "Product Details";
+}
+
+<a asp-action="Index">Return to product adminstration dashboard...</a><br />
+
+<h2>@Model.Name Details</h2>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a><br />
+    <a asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
+</div>
+
+<hr />
+
+<dl>
+    <dt>@Html.DisplayNameFor(p => p.Name)</dt>
+    <dd>@Html.DisplayFor(p => p.Name)</dd>
+    <dt>@Html.DisplayNameFor(p => p.Description)</dt>
+    <dd>@Html.DisplayFor(p => p.Description)</dd>
+    <dt>@Html.DisplayNameFor(p => p.Price)</dt>
+    <dd>@Html.DisplayFor(p => p.Price)</dd>
+    <dt>Product Image</dt>
+    <dd>
+        @if (!string.IsNullOrWhiteSpace(Model.ImageHref))
+        {
+            <a href="@Model.ImageHref"><img src="@Model.ImageHref" /></a>
+        }
+        else
+        {
+            <span>No image selected.</span>
+        }
+    </dd>
+    @if (!string.IsNullOrWhiteSpace(Model.PolicyRequirement))
+    {
+        <dt>@Html.DisplayNameFor(p => p.PolicyRequirement)</dt>
+        <dd>@Html.DisplayFor(p => p.PolicyRequirement)</dd>
+    }
+</dl>

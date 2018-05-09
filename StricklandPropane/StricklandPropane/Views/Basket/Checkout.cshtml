@@ -1,0 +1,32 @@
+﻿@model CheckoutViewModel
+
+@{
+    ViewBag.Title = "Checkout";
+}
+
+<h2 class="text-center mb-3">Checkout</h2>
+
+<div class="col-xl-8 offset-xl-2">
+    @await Component.InvokeAsync("BasketDetails", new { quantityInputs = true, checkoutButton = false })
+</div>
+<div class="col-xl-3 mx-auto mt-3">
+    <div class="card">
+        <p class="card-header">Grand Total</p>
+        <div class="card-body">
+            <table class="table table-borderless">
+                <tr>
+                    <td>Item Subtotal</td>
+                    <td>$@Model.ItemsSubTotal</td>
+                </tr>
+                <tr>
+                    <td>Shipping</td>
+                    <td>$@Model.Shipping</td>
+                </tr>
+                <tr class="table-secondary">
+                    <td>Grand Total</td>
+                    <td>$@(Model.Shipping + Model.ItemsSubTotal)</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

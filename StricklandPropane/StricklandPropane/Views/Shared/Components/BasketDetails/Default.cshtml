@@ -1,0 +1,78 @@
+﻿@model BasketDetailsViewModel
+
+<div class="card">
+    @if (Model.Items != null && Model.Items.Count > 0)
+    {
+        <div class="card-header">
+            <i class="material-icons">shopping_cart</i>
+            <strong>@Model.Items.Count</strong>
+            <strong class="d-none d-xl-inline">Products in Shopping Basket</strong>
+        </div>
+        <form asp-controller="Basket" asp-action="Update" method="post">
+            <div class="card-body py-2 px-auto">
+                <table class="table table-hover mt-2 mb-2">
+                    <thead class="thead-light">
+                        <tr class="row">
+                            <th class="col-xl-2">Qty</th>
+                            <th class="col-xl-6">Product</th>
+                            <th class="col-xl-2">Unit</th>
+                            <th class="col-xl-2">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr class="row">
+                                <td class="col-xl-2">
+                                    @if (Model.QuantityInputs)
+                                    {
+                                        <input hidden asp-for="ReturnUrl" value="@(Context.Request.Path.Value ?? "")" />
+                                        <input asp-for="Quantities[item.Id]" type="text" class="form-control form-control-sm col-xl-12" />
+                                    }
+                                    else
+                                    {
+                                        <span class="ml-1">@item.Quantity</span>
+                                    }
+                                </td>
+                                <td class="col-xl-6">@item.Product.Name</td>
+                                <td class="col-xl-2">$@item.Product.Price</td>
+                                <td class="col-xl-2">$@(item.Quantity * item.Product.Price)</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr class="row table-secondary">
+                            <td class="col-xl-2"><span class="ml-1">@Model.TotalQuantity</span></td>
+                            <td class="col-xl-6">Total</td>
+                            <td class="col-xl-2"></td>
+                            <td class="col-xl-2">$@Model.TotalPrice</td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                @if (Model.TotalQuantity > 0)
+                {
+                    <div class="btn-group-sm text-right">
+                        @if (Model.QuantityInputs)
+                        {
+                            <button class="btn btn-warning" type="submit">Update</button>
+                        }
+                        @if (Model.CheckoutButton)
+                        {
+                            <a asp-controller="Basket" asp-action="Checkout" class="btn btn-success">Checkout</a>
+                        }
+                    </div>
+                }
+            </div>
+        </form>
+    }
+    else
+    {
+        <div class="card-header">
+            <i class="material-icons">shopping_cart</i>
+            <strong>0</strong>
+            <strong class="d-none d-xl-inline">Items in Shopping Basket</strong>
+        </div>
+    }
+</div>
+    </div>

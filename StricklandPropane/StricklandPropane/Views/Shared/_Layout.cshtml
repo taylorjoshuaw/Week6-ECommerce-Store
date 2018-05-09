@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Strickland Propane - @ViewBag.Title</title>
+
+    <environment include="Development">
+        <!-- Bootstrap Dependencies (jQuery & Popper) -->
+        <script src="~/lib/js/jquery-3.3.1.slim.js"></script>
+        <script src="~/lib/js/popper.js"></script>
+        <!-- Bootstrap -->
+        <link href="~/lib/css/bootstrap.css" rel="stylesheet" />
+        <script src="~/lib/js/bootstrap.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <!-- Bootstrap Dependencies (jQuery & Popper) -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+        <!-- Bootstrap -->
+        <link href="~/lib/css/bootstrap.css" rel="stylesheet" />
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+    </environment>
+
+    <!-- Material icons font CSS -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- Site-specific styling -->
+    <link href="~/css/site.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="navbar navbar-dark bg-primary navbar-expand-lg sticky-top mb-3">
+        <a class="navbar-brand" href="#">Strickland Propane</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#strickland-nav-content" aria-controls="strickland-nav-content" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="strickland-nav-content">
+            <ul class="navbar-nav nav-pills ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Shop" asp-action="Index">Shop</a>
+                </li>
+                @if (User.IsInRole(ApplicationRoles.Admin))
+                {
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Products" asp-action="Index">Product Dashboard</a>
+                </li>
+                }
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <a class="nav-link" asp-controller="Account" asp-action="Profile"><i class="material-icons">person</i>@User.Identity.Name</a>
+                    }
+                    else
+                    {
+                        <span class="nav-link"><i class="material-icons">person_outline</i>Not logged in.</span>
+                    }
+                </li>
+                <li class="nav-item ml-2">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <form method="post" asp-controller="Account" asp-action="Logout" >
+                            <button type="submit" class="btn btn-danger">Log Out</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-success">Log In</a>
+                        <a asp-controller="Account" asp-action="Register" class="btn btn-info">Register</a>
+                    }
+                </li>
+            </ul>
+        </div>
+        @*
+            @if (User.Identity.IsAuthenticated)
+            {
+                <form method="post" asp-controller="Account" asp-action="Logout">
+                    <a asp-controller="Account" asp-action="Profile"><i class="material-icons">person</i>@User.Identity.Name</a> <button type="submit">Logout</button> <!-- Will be an anchor tag when Bootstrap is integrated <a asp-controller="Account" asp-action="Logout">&#40logout&#41</a> -->
+                </form>
+            }
+            else
+            {
+                <i class="material-icons">person_outline</i><p>Not logged in. <a asp-controller="Account" asp-action="Login">&#40login&#41</a></p>
+            }
+            <p><a asp-controller="Shop" asp-action="Index">Shopping</a></p>
+            @if (User.IsInRole(ApplicationRoles.Admin))
+            {
+                <p><a asp-controller="Products" asp-action="Index">Product Administration Dashboard</a></p>
+            }
+        *@
+    </div>
+    <div class="container-fluid">
+        @RenderBody()
+    </div>
+</body>
+</html>
