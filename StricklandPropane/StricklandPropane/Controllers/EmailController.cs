@@ -76,7 +76,8 @@ namespace StricklandPropane.Controllers
 
             // Generate the verification code and link to be sent in the e-mail
             string code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            string verifyLink = Url.Action(nameof(Verify), "Email", new { email, code }, "https", "localhost:44306");
+            string verifyLink = Url.Action(nameof(Verify), "Email",
+                new { email, code }, "https", HttpContext.Request.Host.Value);
 
             // Compose the e-mail message to send to the user
             var message = new SendGridMessage()
